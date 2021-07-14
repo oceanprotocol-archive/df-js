@@ -6,17 +6,17 @@ This repo defines operations and eligibility criterias for Data Farming initiati
 
 ---
 
-- [🌾 What is Data Farming](#what-is-data-farming?)
+- [🌾 What is Data Farming?](#what-is-data-farming)
 - [🤑 Reward Function](#reward-function)
 - [🚜 Rewards - Calculation & Distribution](#rewards-calculation-&-Distribution)
-- [✅ Dataset Eligibility Criteria](#-criteria)
-- [❓ How to submit Datasets?](#-list-schema)
-- [🧑‍🌾 Farming List Usage](#️-list-usage)
-- [🏛 License](#-license)
+- [✅ Dataset Eligibility Criteria](#dataset-eligibility-criteria)
+- [❓ How to submit Datasets?](#how-to-submit-datasets)
+- [🧑‍🌾 Farming List Usage](#️farming-list-usage)
+- [🏛 License](#license)
 
 ---
 
-## 🌾 What is Data Farming?
+## 🌾What is Data Farming
 
 Data Farming is a community incentive program by Ocean Protocol Foundation aiming to achieve below objectives -
 
@@ -34,13 +34,21 @@ There are other indirect benefits that arises out of this initiative -
 
 Current Reward Function is -
 
-### **$F_{ij} = log_{10}(S_{ij}+1)W^s * log_{10}(D_j+2)W^d$**
+# *F<sub>ij</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(D<sub>j</sub>+2)W<sup>d<sup>*
 
-_where:
-$Sij$= actor i’s OCEAN stake in data asset j = (actor’s # BPTs in datatoken j’s pool / total # BPTs in pool)
-$Dj$ = # times data asset j has been consumed in the last week (= # consume transfers to the datatoken j’s Provider)
-$W^s$ = weight for stake (supply)
-$W^d$ = weight for data consume volume_
+
+
+where:  
+   
+*S<sub>ij</sub>= actor i’s OCEAN stake in data asset j = (actor’s # BPTs in datatoken j’s pool / total # BPTs in pool)*
+   
+*D<sub>j</sub> = # times data asset j has been consumed in the last week (= # consume transfers to the datatoken j’s Provider)*
+   
+*W<sup>s</sup> = weight for stake (supply)* `s = 1`
+   
+*W<sup>d</sup> = weight for data consume volume* `d = 1`
+   
+
 
 > **Note** - Reward function might get updated on weekly basis in order to optimise towards desired Objectives. To make sure you are always using the correct reward function for your rewards calculation or in your dapp, always check the current reward function.
 
@@ -59,7 +67,7 @@ These criterias are as follows -
 
 > Note - If it is found that data provider is acting as staker using their other wallets on their own datasets, then their dataset will be disqualified and banned from data farming program further on.
 
-## ❓How to submit Datasets ?
+## ❓How to submit Datasets
 
 > ToDo
 
