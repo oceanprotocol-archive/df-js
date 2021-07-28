@@ -98,7 +98,6 @@ async function getPoolShares(id, subgraphURL, startBlock, endBlock, chunkSize) {
         count++
         const blockShares = await getPoolSharesatBlock(id, subgraphURL, i)
         for (share in blockShares) {
-            //just divide them
             if (!shares.includes[share])
                 shares[share] = 0
             shares[share] += parseFloat(blockShares[share])
@@ -109,7 +108,6 @@ async function getPoolShares(id, subgraphURL, startBlock, endBlock, chunkSize) {
         count++
         const blockShares = await getPoolSharesatBlock(id, subgraphURL, endBlock)
         for (share in blockShares) {
-            //just divide them
             if (!shares.includes[share])
                 shares[share] = 0
             shares[share] += parseFloat(blockShares[share])
