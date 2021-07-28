@@ -2,7 +2,14 @@
 
 # Ocean Data Farming Script
 
-To Do:  explain what is happening
+For each did that matches the chainId:
+          1. get pools for that did
+          2. get snapshots of shares from startBlock to endBlock, from chunk to chunk
+          3. compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
+          4. get consume count
+          5. compute reward
+          6. add reward for did to global rewards
+Write rewards to csv
 
 ## Valid DIDS
 For now, the script loads a json file (dids.json).  Once the repo is going to be public, we are going to load dids from https://github.com/oceanprotocol/datafarming/blob/main/datafarms-list.json

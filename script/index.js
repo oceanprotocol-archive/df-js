@@ -150,13 +150,16 @@ async function getConsumes(did,subgraphURL,startTimestamp,endBlockTimestamp){
 
 async function calculate(){
     /* Flow is simple.
-    For each valid did:
-          1. get pools for that dt
+    For each did that matches the chainId:
+          1. get pools for that did
           2. get snapshots of shares from startBlock to endBlock, from chunk to chunk
-          3. compute average share  (sum all shares from 2 and dividem them by nr of snapshots)
+          3. compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
           4. get consume count
           5. compute reward
+          6. add reward for did to global rewards
+    Write rewards to csv
     */
+   
     const args = process.argv.slice(2)
     const rpcURL = args[0]
     const startBlockNo = args[1]
