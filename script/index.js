@@ -159,7 +159,7 @@ async function calculate(){
           6. add reward for did to global rewards
     Write rewards to csv
     */
-   
+
     const args = process.argv.slice(2)
     const rpcURL = args[0]
     const startBlockNo = args[1]
@@ -198,7 +198,8 @@ async function calculate(){
         for(share in didShares){
             if(!rewards.includes[share])
                 rewards[share]=0
-            rewards[share]=rewards[share]+Math.log10(didShares[share]+1)*StakeWeight*Math.log10(consumes+2)*ConsumeWeight
+            // add reward based on the formula
+            rewards[share]+=(Math.log10(didShares[share]+1)*StakeWeight*Math.log10(consumes+2)*ConsumeWeight)
         }
     }
     //write rewards to csv
