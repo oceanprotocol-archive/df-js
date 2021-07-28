@@ -171,6 +171,8 @@ async function calculate(){
     let subgraphURL
     switch(chainId){
         case 1: subgraphURL = 'https://subgraph.mainnet.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph';break
+        case 56: subgraphURL = 'https://subgraph.bsc.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph';break
+        case 137: subgraphURL = 'https://subgraph.polygon.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph';break
         default: subgraphURL=null; break
     }
     console.error(subgraphURL)
