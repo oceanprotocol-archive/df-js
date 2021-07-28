@@ -1,0 +1,22 @@
+{
+  "name": "datafarming",
+  "version": "0.0.1",
+  "description": "DataFarming Script",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oceanprotocol/datafarming.git"
+  },
+  "author": "devops@oceanprotocol.com",
+  "bugs": {
+    "url": "https://github.com/oceanprotocol/datafarming/issues"
+  },
+  "homepage": "https://github.com/oceanprotocol/datafarming#readme",
+  "dependencies": {
+    "cross-fetch": "^3.1.4",
+    "web3": "^1.4.0"
+  }
+}
