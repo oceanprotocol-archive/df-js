@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const StakeWeight = 1
 const ConsumeWeight = 1
-
+const debug=true
 
 async function getValidDids(chainId) {
     let goodDids = []
@@ -81,9 +81,10 @@ async function getPoolSharesatBlock(id, subgraphURL, block) {
     })
     const result = await response.json()
     for (pool of result.data.pools) {
+        const totalShares=pool.totalShares
         for (share of pool.shares) {
             if (share.balance)
-                shares[share.userAddress.id] = parseFloat(share.balance)
+                shares[share.userAddress.id] = parseFloat(share.balance)/totalShares
         }
     }
     return (shares)
