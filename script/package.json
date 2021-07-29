@@ -17,6 +17,7 @@
   "homepage": "https://github.com/oceanprotocol/datafarming#readme",
   "dependencies": {
     "cross-fetch": "^3.1.4",
+    "decimal.js": "^10.3.1",
     "web3": "^1.4.0"
   }
 }

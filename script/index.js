@@ -1,8 +1,8 @@
 const fetch = require('cross-fetch')
 const Web3 = require('web3')
 const fs = require('fs');
-
-
+const Decimal = require ('decimal.js')
+const OceanReward = 50000
 const StakeWeight = 1
 const ConsumeWeight = 1
 const debug=true
@@ -84,7 +84,7 @@ async function getPoolSharesatBlock(id, subgraphURL, block) {
         const totalShares=pool.totalShares
         for (share of pool.shares) {
             if (share.balance)
-                shares[share.userAddress.id] = parseFloat(share.balance)/totalShares
+                shares[share.userAddress.id] = new Decimal(share.balance).div(totalShares)
         }
     }
     return (shares)
@@ -100,8 +100,8 @@ async function getPoolShares(id, subgraphURL, startBlock, endBlock, chunkSize) {
         const blockShares = await getPoolSharesatBlock(id, subgraphURL, i)
         for (share in blockShares) {
             if (!shares.includes[share])
-                shares[share] = 0
-            shares[share] += parseFloat(blockShares[share])
+                shares[share] = new Decimal(0)
+            shares[share]=shares[share].plus(blockShares[share])
         }
     }
     if (i < endBlock) {
@@ -110,13 +110,14 @@ async function getPoolShares(id, subgraphURL, startBlock, endBlock, chunkSize) {
         const blockShares = await getPoolSharesatBlock(id, subgraphURL, endBlock)
         for (share in blockShares) {
             if (!shares.includes[share])
-                shares[share] = 0
-            shares[share] += parseFloat(blockShares[share])
+                shares[share] = new Decimal(0)
+            shares[share]=shares[share].plus(blockShares[share])
         }
     }
     for (share in shares) {
         //just do a simple average 
-        shares[share] = shares[share] / count
+        shares[share] = new Decimal(shares[share]).div(count)
+        
     }
     return (shares)
 }
@@ -189,26 +190,33 @@ async function calculate() {
     const endBlockTimestamp = endBlock.timestamp
 
     let rewards = []
+    let totalRewards=new Decimal(0)
     for (did of dids) {
         console.log("Computing did " + did)
         const didShares = await getShares(did, subgraphURL, startBlockNo, endBlockNo, chunkSize)
         const consumes = await getConsumes(did, subgraphURL, startBlockTimestamp, endBlockTimestamp)
         //we have shares & consume nr..  let's calculate rewards
         for (share in didShares) {
-            if (!rewards.includes[share])
-                rewards[share] = 0
+            if(!rewards[share])
+                rewards[share] = new Decimal(0)
             // add reward based on the formula
-            rewards[share] += (Math.log10(didShares[share] + 1) * StakeWeight * Math.log10(consumes + 2) * ConsumeWeight)
+            const reward = new Decimal(didShares[share]).plus(1).log(10).mul(StakeWeight).mul(Math.log10(consumes + 2)).mul(ConsumeWeight)
+            rewards[share] = rewards[share].plus(reward)
+            totalRewards = totalRewards.plus(reward)
         }
+    }
+    let finalRewards=[]
+    // compute final rewards, based on user reward & amount of tokens
+    for (reward in rewards) {
+        finalRewards[reward] =  new Decimal(rewards[reward]).mul(OceanReward).div(totalRewards)
     }
     //write rewards to csv
     const filename = 'rewards_' + chainId + "_" + startBlockNo + "_" + endBlockNo + ".csv"
     console.log("Writing results to " + filename)
     const writeStream = fs.createWriteStream(filename)
-    for (reward in rewards) {
-        writeStream.write(reward + "," + rewards[reward] + "\n")
+    for (reward in finalRewards) {
+        writeStream.write(reward + "," + finalRewards[reward].toString() + "\n")
     }
-
 }
 
 
