@@ -34,7 +34,7 @@ There are other indirect benefits that arises out of this initiative -
 
 Current Reward Function is -
 
-# *F<sub>ij</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(D<sub>j</sub>+2)W<sup>d<sup>*
+# *F<sub>ij(W<sup>s</sup>=1)(W<sup>c</sup>=1)</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(C<sub>j</sub>+2)W<sup>c</sup>*    
 
 
 
@@ -42,11 +42,11 @@ where:
    
 *S<sub>ij</sub>= actor i’s OCEAN stake in data asset j = (actor’s # BPTs in datatoken j’s pool / total # BPTs in pool)*
    
-*D<sub>j</sub> = # times data asset j has been consumed in the last week (= # consume transfers to the datatoken j’s Provider)*
+*C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
    
 *W<sup>s</sup> = weight for stake (supply)* `s = 1`
    
-*W<sup>d</sup> = weight for data consume volume* `d = 1`
+*W<sup>c</sup> = weight for data consume volume* `c = 1`
    
 
 
