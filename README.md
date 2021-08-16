@@ -66,7 +66,6 @@ These criterias are as follows -
 2. Only datasets with unencrypted metadata are eligible.
 3. Only datasets published on Ocean supported networks are eligible (Current supported networks - Ethereum, Polygon, Binance Smart Chain).
 4. Only datasets utilizing OCEAN tokens are Quote asset are eligible.
-5. Each dataset should have minimum 5 distinct stakers (excluding Data Provider) for that dataset to be qualified for data farming rewards.
 
 > Note - If it is found that data provider is acting as staker using their other wallets on their own datasets, then their dataset will be disqualified and banned from data farming program further on.
 
