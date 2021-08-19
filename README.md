@@ -44,9 +44,9 @@ where:
    
 *C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
    
-*W<sup>s</sup> = weight for stake (supply)* `s = 1`
+*W<sup>s</sup> = weight for stake (supply)* `value = 1`
    
-*W<sup>c</sup> = weight for data consume volume* `c = 1`
+*W<sup>c</sup> = weight for data consume volume* `value = 1`
    
 
 
