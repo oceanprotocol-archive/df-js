@@ -34,7 +34,7 @@ There are other indirect benefits that arises out of this initiative -
 
 Current Reward Function is -
 
-# *F<sub>ij</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(D<sub>j</sub>+2)W<sup>d<sup>*
+# *F<sub>ij(W<sup>s</sup>=1)(W<sup>c</sup>=1)</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(C<sub>j</sub>+2)W<sup>c</sup>*    
 
 
 
@@ -42,11 +42,11 @@ where:
    
 *S<sub>ij</sub>= actor i’s OCEAN stake in data asset j = (actor’s # BPTs in datatoken j’s pool / total # BPTs in pool)*
    
-*D<sub>j</sub> = # times data asset j has been consumed in the last week (= # consume transfers to the datatoken j’s Provider)*
+*C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
    
-*W<sup>s</sup> = weight for stake (supply)* `s = 1`
+*W<sup>s</sup> = weight for stake (supply)* `value = 1`
    
-*W<sup>d</sup> = weight for data consume volume* `d = 1`
+*W<sup>c</sup> = weight for data consume volume* `value = 1`
    
 
 
@@ -63,7 +63,9 @@ In order to avoid OPF being the Certified Authority in defining eligibility crit
 These criterias are as follows -
 
 1. Only datasets with 'Dynamic Pricing' are qualified for data farming rewards. (i.e.) Only datasets with data pools are qualified for data farming rewards.
-2. Each dataset should have minimum 5 distinct stakers (excluding Data Provider) for that dataset to be qualified for data farming rewards.
+2. Only datasets with unencrypted metadata are eligible.
+3. Only datasets published on Ocean supported networks are eligible (Current supported networks - Ethereum, Polygon, Binance Smart Chain).
+4. Only datasets utilizing OCEAN tokens are Quote asset are eligible.
 
 > Note - If it is found that data provider is acting as staker using their other wallets on their own datasets, then their dataset will be disqualified and banned from data farming program further on.
 
