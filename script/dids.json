@@ -10,6 +10,17 @@
     {
         "did": "did:op:b07a8bb80242752ce164560ABCb6517DA90a4F65",
         "chainId": 1
+    },
+    {
+        "did": "did:op:326e6BbFc725b63A7BC3c7C052C48d10d9D3BFCf",
+        "chainId": 137
+    },
+    {
+        "did": "did:op:3af10546654FCe4b42D948aB485D13D9EFB427D7",
+        "chainId": 137
+    },
+    {
+        "did": "did:op:2a82D20D65565Be093576Ed9000c4b853D005be3",
+        "chainId": 56
     }
 ]
-

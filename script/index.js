@@ -1,16 +1,17 @@
 const fetch = require('cross-fetch')
 const Web3 = require('web3')
 const fs = require('fs');
-const Decimal = require ('decimal.js')
+const Decimal = require ('decimal.js');
+const { config } = require('process');
 const OceanReward = 50000
 const StakeWeight = 1
 const ConsumeWeight = 1
 const debug=true
 
-async function getValidDids(chainId) {
+async function getValidDids(chainId, filename) {
     let goodDids = []
     //load a file until this repo is public and we can access https://github.com/oceanprotocol/datafarming/blob/main/datafarms-list.json
-    let rawdata = fs.readFileSync('dids.json');
+    let rawdata = fs.readFileSync(filename);
     let dids = JSON.parse(rawdata);
     for (did of dids) {
         if (did.chainId == chainId)
@@ -82,6 +83,7 @@ async function getDTPriceFromPool(dtAddress, subgraphURL, block) {
 }
 async function getPoolSharesatBlock(id, subgraphURL, block) {
     let shares = []
+    console.log("Getting shares for pool "+id+" at block "+block)
     const query = {
         query: `query actorshares{
                     pools(
@@ -188,73 +190,70 @@ async function getConsumes(did, subgraphURL, startTimestamp, endTimestamp) {
 
 async function calculate() {
     /* Flow is simple.
-    For each did that matches the chainId:
-          1. get pools for that did
-          2. get snapshots of shares from startBlock to endBlock, from chunk to chunk
-          3. compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
-          4. get consume count
-          5. compute reward
-          6. add reward for did to global rewards
+    For each chain
+        For each did that matches the chainId:
+            1. get pools for that did
+            2. get snapshots of shares from startBlock to endBlock, from chunk to chunk
+            3. compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
+            4. get consume count
+            5. compute reward
+            6. add reward for did to global rewards
     Write rewards to csv
     */
 
     const args = process.argv.slice(2)
-    const rpcURL = args[0]
-    const startBlockNo = args[1]
-    const endBlockNo = args[2]
-    const chunkSize = args[3]
-    if (!rpcURL || !startBlockNo || !endBlockNo || !chunkSize) {
-        console.error("Missing required params.  Syntax:  node ./index.js RPC_URL startBlock endBlock chunkSize")
+    if (!args[0] || !args[1]) {
+        console.error("Missing required params.  Syntax:  node ./index.js DidListFile ConfigFile")
         process.exit(1)
     }
-    const web3 = new Web3(rpcURL)
-    const chainId = await web3.eth.getChainId()
-    let subgraphURL
-    switch (chainId) {
-        case 1: subgraphURL = 'https://subgraph.mainnet.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph'; break
-        case 56: subgraphURL = 'https://subgraph.bsc.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph'; break
-        case 137: subgraphURL = 'https://subgraph.polygon.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph'; break
-        default: subgraphURL = null; break
-    }
-    console.error(subgraphURL)
-    if (!subgraphURL) {
-        console.error("Invalid chainId")
+    const didListFile = args[0]
+    let rawConfig = fs.readFileSync(args[1]);
+    let configs = JSON.parse(rawConfig);
+    if (!configs) {
+        console.error("Cannot read config")
         process.exit(1)
     }
-    const dids = await getValidDids(chainId)
-    const startBlock = await web3.eth.getBlock(startBlockNo)
-    const startBlockTimestamp = startBlock.timestamp
-    const endBlock = await web3.eth.getBlock(endBlockNo)
-    const endBlockTimestamp = endBlock.timestamp
-
     let rewards = []
     let totalRewards=new Decimal(0)
-    for (did of dids) {
-        console.log("Computing did " + did)
-        const didShares = await getShares(did, subgraphURL, startBlockNo, endBlockNo, chunkSize)
-        const consumes = await getConsumes(did, subgraphURL, startBlockTimestamp, endBlockTimestamp)
-        //we have shares & consume nr..  let's calculate rewards
-        for (share in didShares) {
-            if(!rewards[share])
-                rewards[share] = new Decimal(0)
-            // add reward based on the formula
-            const reward = new Decimal(didShares[share]).plus(1).log(10).mul(StakeWeight).mul(Math.log10(consumes + 2)).mul(ConsumeWeight)
-            rewards[share] = rewards[share].plus(reward)
-            totalRewards = totalRewards.plus(reward)
+    let config
+    for(config of configs){
+        console.log("Start to get rewards for chain: "+config.chainId)
+        rewards[config.chainId] = []
+        const web3 = new Web3(config.rpc)
+        const chainId = config.chainId
+        const startBlock = await web3.eth.getBlock(config.startBlockNo)
+        const startBlockTimestamp = startBlock.timestamp
+        const endBlock = await web3.eth.getBlock(config.endBlockNo)
+        const endBlockTimestamp = endBlock.timestamp
+        const dids = await getValidDids(chainId, didListFile)
+        for (did of dids) {
+            console.log("Computing for did " + did)
+            const didShares = await getShares(did, config.subgraphURL, config.startBlockNo, config.endBlockNo, config.chunkSize)
+            const consumes = await getConsumes(did, config.subgraphURL, startBlockTimestamp, endBlockTimestamp)
+            //we have shares & consume nr..  let's calculate rewards
+            for (share in didShares) {
+                if(!rewards[chainId][share])
+                    rewards[chainId][share] = new Decimal(0)
+                // add reward based on the formula
+                const reward = new Decimal(didShares[share]).plus(1).log(10).mul(StakeWeight).mul(Math.log10(consumes + 2)).mul(ConsumeWeight)
+                rewards[chainId][share] = rewards[chainId][share].plus(reward)
+                totalRewards = totalRewards.plus(reward)
+            }
         }
+        console.log("**********  Done getting rewards for chain: "+config.chainId)
     }
     let finalRewards=[]
-    // compute final rewards, based on user reward & amount of tokens
-    for (reward in rewards) {
-        finalRewards[reward] =  new Decimal(rewards[reward]).mul(OceanReward).div(totalRewards)
-    }
-    //write rewards to csv
-    const filename = 'rewards_' + chainId + "_" + startBlockNo + "_" + endBlockNo + ".csv"
-    console.log("Writing results to " + filename)
+    const filename = 'rewards.csv'
     const writeStream = fs.createWriteStream(filename)
-    for (reward in finalRewards) {
-        writeStream.write(reward + "," + finalRewards[reward].toString() + "\n")
+    writeStream.write("ChainId,Address,Reward\n")
+    // compute final rewards, based on user reward & amount of tokens
+    for(config of configs){
+        for (address in rewards[config.chainId]) {
+            const reward =  new Decimal(rewards[config.chainId][address]).mul(OceanReward).div(totalRewards)
+            writeStream.write(config.chainId + "," + address + "," + reward.toString() + "\n")
+        }
     }
+    console.log("Wrote results to: " + filename)
 }
 
 
