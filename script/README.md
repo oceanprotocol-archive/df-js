@@ -91,8 +91,9 @@ npm i
 ```bash
 node ./index.js dids.json config.json 
 ```
-This will calculate rewards for mainnet, from block 10912100 to block 12912700, using shares snapshots every 1000000 blocks
-Rewards are written to a file (check output)
+Rewards are written to a several files:
+ - rewards.csv  (ChainId, Address , Reward)
+ - several rewards_chainID.csv  (Address , Reward) (one per each chain)
 
 ## 🏛 License
 

@@ -244,13 +244,18 @@ async function calculate() {
     }
     let finalRewards=[]
     const filename = 'rewards.csv'
-    const writeStream = fs.createWriteStream(filename)
+    const writeStream = fs.createWriteStream('rewards.csv')
+    writeStream.write("ChainId,Address,Reward\n")
+    const writeStreamChain = fs.createWriteStream('rewards_'+config.chainId+'.csv')
     writeStream.write("ChainId,Address,Reward\n")
     // compute final rewards, based on user reward & amount of tokens
     for(config of configs){
+        const writeStreamChain = fs.createWriteStream('rewards_'+config.chainId+'.csv')
+        writeStreamChain.write("Address,Reward\n")
         for (address in rewards[config.chainId]) {
             const reward =  new Decimal(rewards[config.chainId][address]).mul(OceanReward).div(totalRewards)
             writeStream.write(config.chainId + "," + address + "," + reward.toString() + "\n")
+            writeStreamChain.write(address + "," + reward.toString() + "\n")
         }
     }
     console.log("Wrote results to: " + filename)
