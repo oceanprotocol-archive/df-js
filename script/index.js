@@ -51,7 +51,35 @@ async function getShares(did, subgraphURL, startBlock, endBlock, chunkSize) {
     return shares
 }
 
+async function getDTPriceFromPool(dtAddress, subgraphURL, block) {
+    let price = null
+    const query = {
+        query: `query dtprice{
+            pools(skip:0,
+                where: { datatokenAddress: "0x${dtAddress}"}
+                block:{number:${block}}) {
+              id
+              consumePrice
+              datatokenReserve
+              oceanReserve
+              spotPrice
+              swapFee
+              transactionCount
+            }
+          }
+        `
+    }
 
+    const response = await fetch(subgraphURL, {
+        method: 'POST',
+        body: JSON.stringify(query)
+    })
+    const result = await response.json()
+    if(result.data.pools)
+        return result.data.pools[0].spotPrice
+    else
+        return (0)
+}
 async function getPoolSharesatBlock(id, subgraphURL, block) {
     let shares = []
     const query = {
@@ -122,21 +150,24 @@ async function getPoolShares(id, subgraphURL, startBlock, endBlock, chunkSize) {
     return (shares)
 }
 
-
-async function getConsumes(did, subgraphURL, startTimestamp, endBlockTimestamp) {
+/* Returns totalConsume for a datatoken (expressed in Ocean tokens) in a specific interval
+    Gets every consume from the graph, and for each one take the block no and finds the spotPrice of that pool at that block time
+*/
+async function getConsumes(did, subgraphURL, startTimestamp, endTimestamp) {
+    let totalConsume = 0
     const dtAddress = did.slice(7).toLowerCase()
     const query = {
         query: `query consumes{
                 tokenOrders(
-                  where: {timestamp_gte:${startTimestamp} ,timestamp_lte:${endBlockTimestamp}, datatokenId:"0x${dtAddress}"}
+                  where: {timestamp_gte:${startTimestamp} ,timestamp_lte:${endTimestamp}, datatokenId:"0x${dtAddress}"}
                 )
                 {
                   datatokenId {
                     id
                   }
-                  timestamp
+                  timestamp,
+                  block
                 }
-                      
                     }`
     }
     const response = await fetch(subgraphURL, {
@@ -144,7 +175,14 @@ async function getConsumes(did, subgraphURL, startTimestamp, endBlockTimestamp) 
         body: JSON.stringify(query)
     })
     const result = await response.json()
-    return (result.data.tokenOrders.length)
+    let count = 0
+    for (consumes of result.data.tokenOrders) {
+        const price = await getDTPriceFromPool(dtAddress,subgraphURL,consumes.block)
+        totalConsume += parseFloat(price)
+        count ++
+    }
+    console.info("Total consumes for did:"+did+" :"+totalConsume+" ("+count+" consumes)")
+    return (totalConsume)
 
 }
 
