@@ -255,8 +255,8 @@ async function calculate() {
             const reward =  new Decimal(rewards[config.chainId][address]).mul(OceanReward).div(totalRewards)
             if(reward.gte(config.decMinReward)){
                 // do not add the reward to output, since it's below the threshold
-                writeStream.write(config.chainId + "," + address + "," + reward.toPrecision(6,Decimal.ROUND_UP) + "\n")
-                writeStreamChain.write(address + "," + reward.toPrecision(6,Decimal.ROUND_UP) + "\n")
+                writeStream.write(config.chainId + "," + address + "," + reward.toFixed(6,Decimal.ROUND_UP) + "\n")
+                writeStreamChain.write(address + "," + reward.toFixed(6,Decimal.ROUND_UP) + "\n")
             }
         }
     }
