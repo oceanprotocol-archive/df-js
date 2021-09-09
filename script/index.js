@@ -217,6 +217,7 @@ async function calculate() {
     let totalRewards=new Decimal(0)
     let config
     for(config of configs){
+        config.decMinReward=new Decimal(config.minPayment)
         console.log("Start to get rewards for chain: "+config.chainId)
         rewards[config.chainId] = []
         const web3 = new Web3(config.rpc)
@@ -242,8 +243,6 @@ async function calculate() {
         }
         console.log("**********  Done getting rewards for chain: "+config.chainId)
     }
-    let finalRewards=[]
-    const filename = 'rewards.csv'
     const writeStream = fs.createWriteStream('rewards.csv')
     writeStream.write("ChainId,Address,Reward\n")
     const writeStreamChain = fs.createWriteStream('rewards_'+config.chainId+'.csv')
@@ -254,11 +253,14 @@ async function calculate() {
         writeStreamChain.write("Address,Reward\n")
         for (address in rewards[config.chainId]) {
             const reward =  new Decimal(rewards[config.chainId][address]).mul(OceanReward).div(totalRewards)
-            writeStream.write(config.chainId + "," + address + "," + reward.toString() + "\n")
-            writeStreamChain.write(address + "," + reward.toString() + "\n")
+            if(reward.gte(config.decMinReward)){
+                // do not add the reward to output, since it's below the threshold
+                writeStream.write(config.chainId + "," + address + "," + reward.toPrecision(6,Decimal.ROUND_UP) + "\n")
+                writeStreamChain.write(address + "," + reward.toPrecision(6,Decimal.ROUND_UP) + "\n")
+            }
         }
     }
-    console.log("Wrote results to: " + filename)
+    console.log("Wrote results..Bye")
 }
 
 
