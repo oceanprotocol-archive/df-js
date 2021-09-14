@@ -218,7 +218,8 @@ async function calculate() {
     let config
     for(config of configs){
         config.decMinReward=new Decimal(config.minPayment)
-        console.log("Start to get rewards for chain: "+config.chainId)
+        config.chunkSize = parseInt( (parseInt(config.endBlockNo)-parseInt(config.startBlockNo))/parseInt(config.partitions))
+        console.log("Start to get rewards for chain: "+config.chainId+", partitions:"+config.partitions+" -> chunkSize:"+config.chunkSize)
         rewards[config.chainId] = []
         const web3 = new Web3(config.rpc)
         const chainId = config.chainId

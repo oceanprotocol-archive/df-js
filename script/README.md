@@ -65,7 +65,7 @@ npm i
         "startBlockNo":10100645,
         "endBlockNo":13100645,
         "rpc":"https://mainnet.infura.io/v3/XXXXX",
-        "chunkSize": 100000
+        "partitions": 35
     },
     {
         "subgraphURL":"https://subgraph.bsc.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph",
@@ -73,7 +73,7 @@ npm i
         "startBlockNo":10004272,
         "endBlockNo":10364272,
         "rpc":"https://bsc-dataseed.binance.org/",
-        "chunkSize": 100000
+        "partitions": 35
     },
     {
         "subgraphURL":"https://subgraph.polygon.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph",
@@ -81,7 +81,7 @@ npm i
         "startBlockNo":13413668,
         "endBlockNo":18413668,
         "rpc":"https://polygon-mainnet.infura.io/v3/XXXX",
-        "chunkSize": 100000
+        "partitions": 35
     }
 ]
    ```

@@ -4,8 +4,8 @@
         "chainId":1,
         "startBlockNo":10100645,
         "endBlockNo":13100645,
-        "rpc":"https://mainnet.infura.io/v3/XXX",
-        "chunkSize": 100000,
+        "rpc":"https://mainnet.infura.io/v3/XX",
+        "partitions": 35,
         "minPayment": 10
     },
     {
@@ -14,7 +14,7 @@
         "startBlockNo":10004272,
         "endBlockNo":10364272,
         "rpc":"https://bsc-dataseed.binance.org/",
-        "chunkSize": 100000,
+        "partitions": 35,
         "minPayment": 2
     },
     {
@@ -22,8 +22,8 @@
         "chainId":137,
         "startBlockNo":13413668,
         "endBlockNo":18413668,
-        "rpc":"https://polygon-mainnet.infura.io/v3/XXX",
-        "chunkSize": 100000,
+        "rpc":"https://polygon-mainnet.infura.io/v3/XX",
+        "partitions": 35,
         "minPayment": 2
     }
 ]
