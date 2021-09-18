@@ -34,23 +34,17 @@ There are other indirect benefits that arises out of this initiative -
 
 Current Reward Function is -
 
-# *F<sub>ij(W<sup>s</sup>=1)(W<sup>c</sup>=1)</sub> = log<sub>10</sub>(S<sub>ij</sub>+1)W<sup>s</sup> * log<sub>10</sub>(C<sub>j</sub>+2)W<sup>c</sup>*    
-
-
+# *F<sub>ij = log<sub>10</sub>(S<sub>ij</sub>+1) * log<sub>10</sub>(C<sub>j</sub>+2)*    
 
 where:  
    
 *S<sub>ij</sub>= actor i’s OCEAN stake in data asset j = (actor’s # BPTs in datatoken j’s pool / total # BPTs in pool)*
    
 *C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
-   
-*W<sup>s</sup> = weight for stake (supply)* `value = 1`
-   
-*W<sup>c</sup> = weight for data consume volume* `value = 1`
-   
+ 
+This is the _initial_ reward function. We anticipate that it will get tuned, as often as weekly, based on feedback from the community and observing behavior in the ecosystem. 
 
-
-> **Note** - Reward function might get updated on weekly basis in order to optimise towards desired Objectives. To make sure you are always using the correct reward function for your rewards calculation or in your dapp, always check the current reward function.
+To make sure you are always using the correct reward function for your rewards calculation or in your dapp, always check the current reward function.
 
 ## 🚜 Rewards - Calculation & Distribution
 
