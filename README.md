@@ -33,11 +33,11 @@ _where:_
  
 The reward function may get tuned weekly, based on feedback. We reflect updates here.
 
-## 🚜 Reward Calculation & Distribution
+## 🚜Reward Calculation & Distribution
 
 Rewards are calculated every Monday, looking back at the previous week. Rewards are airdropped to each pool every Tuesday. A list of rewards distribution for a given week is published as `weekX-rewards.csv` in `rewards/` (X = week number) folder of this repo.
 
-## ✅ Data Pool Eligibility Criteria
+## ✅Data Pool Eligibility Criteria
 
 Rewards go to data _pools_, not data assets. A data pool contains Ocean datatokens for given data service. That data service may be of any type - `dataset` (for static uris) or `algorithm` or `compute` (compute-to-data).
    
@@ -54,11 +54,11 @@ These criteria may get tuned weekly, based on feedback. We reflect updates here.
 
 Please follow [this step-by-step guide](https://medium.com/@manan.patel/983eb5414be7).
 
-## 🧑‍🌾 Farming List Usage
+## 🧑‍🌾Farming List Usage
 
 The file `datafarms-list.json` can be used by marketplaces and dapps building on Ocean Protocol (including Ocean Market) to signal qualified datasets for farming rewards to the community.
 
-## 🏛 License
+## 🏛License
 
 ```text
 Copyright 2021 Ocean Protocol Foundation Ltd.
