@@ -39,7 +39,7 @@ Rewards are calculated every Monday, looking back at the previous week. Rewards 
 
 ## ✅ Data Pool Eligibility Criteria
 
-Rewards go to data _pools_, not data assets. A data pool contains Ocean datatokens for given data service. That data service may be of any type - dataset (for static uris) or algorithm or compute (compute-to-data).
+Rewards go to data _pools_, not data assets. A data pool contains Ocean datatokens for given data service. That data service may be of any type - `dataset` (for static uris) or `algorithm` or `compute` (compute-to-data).
    
 Criteria:
    
