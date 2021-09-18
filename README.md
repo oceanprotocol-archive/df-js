@@ -2,7 +2,7 @@
 
 # Ocean Data Farming
 
-This repo defines operations and eligibility criterias for Data Farming initiative by Ocean Protocol Foundation. This repo should be considered as single source-of-truth in case of any conflicts and confusion. One of the most important asset of this repo is `datafarms-list.json`. This list will contain details of all the datasets that are eligible for data farming rewards.
+This repo defines core operations and eligibility criterias for Ocean Data Farming (DF). This repo should be considered as single source-of-truth in case of any conflicts. One key file is `datafarms-list.json`, which lists the data pools that are eligible for DF rewards.
 
 ---
 
@@ -18,21 +18,11 @@ This repo defines operations and eligibility criterias for Data Farming initiati
 
 ## 🌾What is Data Farming
 
-Data Farming is a community incentive program by Ocean Protocol Foundation aiming to achieve below objectives -
-
-1. Accelerate supply of desired (domain and quality) data.
-2. Increase TVL
-3. Promote data consumption
-
-There are other indirect benefits that arises out of this initiative -
-
-1. Improved adoption rate of Ocean Protocol
-2. Ocean community gets better educated on using Ocean Market and other dapps on Ocean Protocol
-3. Increase in data trading volume (and network transactions)
+Ocean Data Farming is a rewards program that incentivizes for **data consume volume** and **data pool liquidity** in the Ocean ecosystem.
 
 ## 🤑Reward Function
 
-Current Reward Function is -
+The current Reward Function is -
 
 # *F<sub>ij = log<sub>10</sub>(S<sub>ij</sub>+1) * log<sub>10</sub>(C<sub>j</sub>+2)*    
 
@@ -42,26 +32,24 @@ where:
    
 *C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
  
-This is the _initial_ reward function. We anticipate that it will get tuned, as often as weekly, based on feedback from the community and observing behavior in the ecosystem. 
-
-To make sure you are always using the correct reward function for your rewards calculation or in your dapp, always check the current reward function.
+This reward function may get tuned weekly, based on feedback. We reflect updates to the reward function here.
 
 ## 🚜 Rewards - Calculation & Distribution
 
-Rewards for the current week will be calculated every Monday/Tuesday of the next week. And all eligible wallet addresses will be airdropped rewards on Tuesday or latest Wednesday. List of rewards distribution for a given week will also be published as `weekX-rewards.csv` in `rewards/` (X = week number) folder of this repo.
+Rewards are calculated every Monday, looking back at the previous week. Rewards are airdropped to each pool every Tuesday. A list of rewards distribution for a given week is published as `weekX-rewards.csv` in `rewards/` (X = week number) folder of this repo.
 
-## ✅ Dataset Eligibility Criteria
+## ✅ Data Pool Eligibility Criteria
 
-In order to avoid OPF being the Certified Authority in defining eligibility criteria, we will start with bare minimum criterias for datasets to participate in Data Farming initiative.
-
-These criterias are as follows -
-
-1. Only datasets with 'Dynamic Pricing' are qualified for data farming rewards. (i.e.) Only datasets with data pools are qualified for data farming rewards.
-2. Only datasets with unencrypted metadata are eligible.
-3. Only datasets published on Ocean supported networks are eligible (Current supported networks - Ethereum, Polygon, Binance Smart Chain).
-4. Only datasets utilizing OCEAN tokens are eligible.
-
-> Note - If it is found that data provider is acting as staker using their other wallets on their own datasets, then their dataset will be disqualified and banned from data farming program further on.
+Rewards go to data _pools_, not data assets. A data pool contains Ocean datatokens for given data service. That data service may be of any type - dataset (for static uris) or algorithm or compute (compute-to-data).
+   
+Criteria:
+   
+- Metadata must be plaintext, not encrypted
+- Pool must be on Ocean supported production networks. Current list: Ethereum mainnet, Polygon, BSC
+- Pool must use OCEAN liquidity
+- The data service can’t be in [purgatory](https://github.com/oceanprotocol/list-purgatory/blob/main/policies/README.md) for copyright violations / DMCA notices, sensitive data, or trademark violations
+   
+These criteria may get tuned weekly, based on feedback. We reflect updates to the criteria here.
 
 ## ❓How to submit Datasets
 
