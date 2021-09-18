@@ -14,7 +14,6 @@ This repo defines core operations and eligibility criterias for Ocean Data Farmi
 - [🧑‍🌾 Farming List Usage](#️farming-list-usage)
 - [🏛 License](#license)
 
----
 
 ## 🌾What is Data Farming
 
