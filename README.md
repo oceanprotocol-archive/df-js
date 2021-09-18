@@ -52,7 +52,7 @@ These criteria may get tuned weekly, based on feedback. We reflect updates here.
 
 ## ❓How to Submit Data Pools
 
-> ToDo
+Please follow [this step-by-step guide](https://medium.com/@manan.patel/983eb5414be7).
 
 ## 🧑‍🌾 Farming List Usage
 
