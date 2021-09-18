@@ -8,7 +8,7 @@ This repo defines core operations and eligibility criterias for Ocean Data Farmi
 
 - [🌾 What is Data Farming?](#what-is-data-farming)
 - [🤑 Reward Function](#reward-function)
-- [🚜 Rewards - Calculation & Distribution](#rewards-calculation-&-Distribution)
+- [🚜 Reward Calculation & Distribution](#rewards-calculation-&-Distribution)
 - [✅ Dataset Eligibility Criteria](#dataset-eligibility-criteria)
 - [❓ How to submit Datasets?](#how-to-submit-datasets)
 - [🧑‍🌾 Farming List Usage](#️farming-list-usage)
@@ -22,9 +22,9 @@ Ocean Data Farming is a rewards program that incentivizes for **data consume vol
 
 ## 🤑Reward Function
 
-The current Reward Function is -
+Here is the current Reward Function:
 
-# *F<sub>ij = log<sub>10</sub>(S<sub>ij</sub>+1) * log<sub>10</sub>(C<sub>j</sub>+2)*    
+> *F<sub>ij = log<sub>10</sub>(S<sub>ij</sub>+1) * log<sub>10</sub>(C<sub>j</sub>+2)*    
 
 where:  
    
@@ -32,9 +32,9 @@ where:
    
 *C<sub>j</sub> = total consumption volume of data asset j in OCEAN tokens for the given week (= price of datatoken j in OCEAN tokens *  # of consumes)*
  
-This reward function may get tuned weekly, based on feedback. We reflect updates to the reward function here.
+The reward function may get tuned weekly, based on feedback. We reflect updates here.
 
-## 🚜 Rewards - Calculation & Distribution
+## 🚜 Reward Calculation & Distribution
 
 Rewards are calculated every Monday, looking back at the previous week. Rewards are airdropped to each pool every Tuesday. A list of rewards distribution for a given week is published as `weekX-rewards.csv` in `rewards/` (X = week number) folder of this repo.
 
@@ -49,9 +49,9 @@ Criteria:
 - Pool must use OCEAN liquidity
 - The data service can’t be in [purgatory](https://github.com/oceanprotocol/list-purgatory/blob/main/policies/README.md) for copyright violations / DMCA notices, sensitive data, or trademark violations
    
-These criteria may get tuned weekly, based on feedback. We reflect updates to the criteria here.
+These criteria may get tuned weekly, based on feedback. We reflect updates here.
 
-## ❓How to submit Datasets
+## ❓How to Submit Data Pools
 
 > ToDo
 
