@@ -10,7 +10,7 @@ This repo defines core operations and eligibility criterias for Ocean Data Farmi
 - [🤑 Reward Function](#reward-function)
 - [🚜 Reward Calculation & Distribution](#rewards-calculation-&-Distribution)
 - [✅ Data Pool Eligibility Criteria](#dataset-eligibility-criteria)
-- [❓ How to submit Data Pools](#how-to-submit-datasets)
+- [❓ How to Submit Data Pools](#how-to-submit-datasets)
 - [🧑‍🌾 Farming List Usage](#️farming-list-usage)
 - [🏛 License](#license)
 
