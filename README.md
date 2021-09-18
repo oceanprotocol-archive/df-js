@@ -2,7 +2,7 @@
 
 # Ocean Data Farming
 
-This repo defines core operations and eligibility criterias for Ocean Data Farming (DF). This repo should be considered as single source-of-truth in case of any conflicts. One key file is `datafarms-list.json`, which lists the data pools that are eligible for DF rewards.
+This repo defines core operations and eligibility criteria for Ocean Data Farming (DF). This repo should be considered as single source-of-truth in case of any conflicts. One key file is `datafarms-list.json`, which lists the data pools that are eligible for DF rewards.
 
 # Contents
 
