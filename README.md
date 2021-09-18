@@ -4,13 +4,13 @@
 
 This repo defines core operations and eligibility criterias for Ocean Data Farming (DF). This repo should be considered as single source-of-truth in case of any conflicts. One key file is `datafarms-list.json`, which lists the data pools that are eligible for DF rewards.
 
----
+# Contents
 
 - [🌾 What is Data Farming?](#what-is-data-farming)
 - [🤑 Reward Function](#reward-function)
 - [🚜 Reward Calculation & Distribution](#rewards-calculation-&-Distribution)
-- [✅ Dataset Eligibility Criteria](#dataset-eligibility-criteria)
-- [❓ How to submit Datasets?](#how-to-submit-datasets)
+- [✅ Data Pool Eligibility Criteria](#dataset-eligibility-criteria)
+- [❓ How to submit Data Pools](#how-to-submit-datasets)
 - [🧑‍🌾 Farming List Usage](#️farming-list-usage)
 - [🏛 License](#license)
 
@@ -57,7 +57,7 @@ These criteria may get tuned weekly, based on feedback. We reflect updates here.
 
 ## 🧑‍🌾 Farming List Usage
 
-This list can be used by marketplaces and dapps building on Ocean Protocol (including Ocean Market) to signal qualified datasets for farming rewards to the community.
+The file `datafarms-list.json` can be used by marketplaces and dapps building on Ocean Protocol (including Ocean Market) to signal qualified datasets for farming rewards to the community.
 
 ## 🏛 License
 
