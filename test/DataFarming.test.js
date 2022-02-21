@@ -14,7 +14,6 @@ describe("DataFarming", function () {
     amount5 = ethers.utils.parseEther("0.000511962"),
     oceanSupply = ethers.utils.parseEther("100000000");
 
-
   it("Should deploy contracts", async function () {
     [owner, user1, user2, user3, user4, user5] = await ethers.getSigners();
 
@@ -28,7 +27,6 @@ describe("DataFarming", function () {
     rewards = await Rewards.deploy(owner.address, ocean.address);
     await rewards.deployed();
 
-   
     expect(await ocean.balanceOf(owner.address)).to.equal(oceanSupply);
     expect(await ocean.balanceOf(user1.address)).to.equal(0);
     expect(await ocean.balanceOf(user2.address)).to.equal(0);
@@ -63,8 +61,6 @@ describe("DataFarming", function () {
   });
 
   it("Should allow user to withdraw rewards", async function () {
-
-
     expect(await rewards.rewards(user1.address)).to.equal(amount1);
     expect(await rewards.rewards(user2.address)).to.equal(amount2);
     expect(await rewards.rewards(user3.address)).to.equal(amount3);
@@ -119,7 +115,6 @@ describe("DataFarming", function () {
   });
 
   it("OPF should withdraw ocean left", async function () {
-
     const oceanRewardBalance = await ocean.balanceOf(rewards.address);
     expect(await ocean.balanceOf(rewards.address)).gt(0);
 
@@ -127,7 +122,6 @@ describe("DataFarming", function () {
 
     await expectRevert(rewards.connect(user1).withdrawOcean(), "NOT OWNER");
 
-    // owner has no rewards, reverts
     await rewards.withdrawOcean();
 
     expect(await ocean.balanceOf(rewards.address)).to.equal(0);
