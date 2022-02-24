@@ -61,7 +61,7 @@ The file `datafarms-list.json` can be used by marketplaces and dapps building on
 ## 🏛 License
 
 ```text
-Copyright 2021 Ocean Protocol Foundation Ltd.
+Copyright 2022 Ocean Protocol Foundation Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
