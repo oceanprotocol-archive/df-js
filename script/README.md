@@ -1,22 +1,19 @@
 # DF Script
 
+## Script algorithm
+
+```text
 For each did that matches the chainId:
-
-          1. get pools for that did
-
-          2. get snapshots of shares from startBlock to endBlock, from chunk to chunk
-
-          3. compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
-
-          4. get consume count
-
-          5. compute reward
-
-          6. add reward for did to global rewards
-
+  get pools for that did
+  get snapshots of shares from startBlock to endBlock, from chunk to chunk
+  compute average share  (sum all shares from step 2 and dividem them by nr of snapshots)
+  get consume count
+  compute reward
+  add reward for did to global rewards
 Write rewards to csv
+```
 
-## Install deps
+## Install dependencies
 ```bash
 npm i
 ```
