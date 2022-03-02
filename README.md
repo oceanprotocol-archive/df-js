@@ -15,10 +15,21 @@ For each did that matches the chainId:
 Write rewards to csv
 ```
 
-## Install dependencies
+# Installation
 ```bash
 npm i
 ```
+
+# Run the script
+```bash
+node ./index.js dids.json config.json 
+```
+Rewards are written to a several files:
+ - rewards.csv  (ChainId, Address , Reward)
+ - several rewards_chainID.csv  (Address , Reward) (one per each chain)
+
+
+# JSON Schemas
 
 ## dids.json
   This contains the list of accepted dids and their chain.id
@@ -70,13 +81,4 @@ npm i
     }
 ]
    ```
-      
-
-## Run the script
-```bash
-node ./index.js dids.json config.json 
-```
-Rewards are written to a several files:
- - rewards.csv  (ChainId, Address , Reward)
- - several rewards_chainID.csv  (Address , Reward) (one per each chain)
 
