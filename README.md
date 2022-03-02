@@ -36,7 +36,7 @@ npm i
     {
         "did": "did:op:326e6BbFc725b63A7BC3c7C052C48d10d9D3BFCf",
         "chainId": 137
-    },
+    }
 ]
 ```
 
