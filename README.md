@@ -1,6 +1,6 @@
 # DF Script (JS)
 
-[Data Farming](https://github.com/oceanprotocol/datafarming) script in JS. Consider it the alpha.
+Data Farming script in JS. Consider it the alpha.
 
 ## Script algorithm
 
