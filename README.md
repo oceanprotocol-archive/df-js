@@ -2,6 +2,8 @@
 
 Data Farming script in JS. Consider it the alpha.
 
+Related repos: [df-issues](https://github.com/oceanprotocol/df-issues), [df-py](https://github.com/oceanprotocol/df-py).
+
 ## Script algorithm
 
 ```text
