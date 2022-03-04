@@ -6,7 +6,13 @@ const Decimal = require('decimal.js');
 const ocean = require('@oceanprotocol/lib')
 const crypto = require('crypto-js');
 
+//settings
 const decMinReward = new Decimal(10)    /// if end reward is lower than 10, ignore it
+const verboseDebug = true  // set it to false to disable verbose output
+
+
+
+//script begins
 
 if (!process.argv[2] || !process.argv[3] || !process.argv[4] || !process.argv[5] || !process.argv[6]) {
     console.error("Missing arguments. Required:  ChainID  StartBlock EndBlock Chunksize TotalOceanReward")
@@ -54,7 +60,7 @@ async function calculate() {
     */
     let rewards = []
     let totalRewards = new Decimal(0)
-    console.log("Start to get rewards for chain: " + chainId + ", StartBlock: " + startBlock + ", EndBlock: " + endBlock + ", chunkSize:" + chunkSize)
+    if(verboseDebug) console.log("Start to get rewards for chain: " + chainId + ", StartBlock: " + startBlock + ", EndBlock: " + endBlock + ", chunkSize:" + chunkSize)
     //get approved tokens from subgraph
     const approvedTokens = await getApprovedTokens()
     if (approvedTokens.length < 1) {
@@ -62,29 +68,32 @@ async function calculate() {
         process.exit(1)
     }
     const pools = await getAllPools(approvedTokens)
+    if(verboseDebug) console.log("Got a total of "+pools.length+" pools that are a match")
     //loop through pools
     for (const pool of pools) {
         const did = 'did:op:' + crypto.SHA256(Web3.utils.toChecksumAddress(pool.datatoken.nft.id) + chainId.toString(10))
+        if(verboseDebug) console.log("\t Checking DID "+did+" (with pool "+pool.id+")")
         //fetch the doo
         let ddo
         try {
             ddo = await Aquarius.resolve(did)
             //ceck if asset in purgatory
             if (ddo.purgatory && ddo.purgatory.state) {
+                if(verboseDebug) console.log("\t\t Found in purgatory, skipping this pool")
                 //this asset is in purgatory, skip it
-                //console.log("DID:"+ did+" not found. Skipping..")
                 continue
             }
-            //console.log("DID:"+ did+" added")
         }
         catch (err) {
-            //console.log("DID:"+ did+" not found. Skipping..")
+            if(verboseDebug) console.log("\t\t Failed to fetch the DDO, skipping this pool")
             continue
         }
         // get total consume volume in usdt and ocean
         const { consumeVolumeUSDT, consumeVolumeOcean } = await getConsumeVolume(pool.datatoken.id, startBlock, endBlock)
+        if(verboseDebug) console.log("\t\t Got "+consumeVolumeOcean+" Ocean consume volume  and "+consumeVolumeUSDT+" USDT consume volume for this asset")
         // fetch relative shares in the pool for each user by taking snapshots every chunkSize from startBlock to endBlock
         const relativeSharesPerUser = await getAvgSharesPerUser(pool.id, startBlock, endBlock, chunkSize)
+        if(verboseDebug) console.log("\t\t Got a total of "+Object.keys(relativeSharesPerUser).length+" liquidity providers")
         for (user in relativeSharesPerUser) {
             if (!rewards[user])
                 rewards[user] = new Decimal(0)
@@ -94,6 +103,10 @@ async function calculate() {
             const reward = Decimal.log(stakeIncentive).mul(Decimal.log(consumeIncentive))
             rewards[user] = rewards[user].plus(reward)
             totalRewards = totalRewards.plus(reward)
+            if(verboseDebug) console.log("\t\t\t User "+user+" has reward: "+rewards[user].toFixed(6, Decimal.ROUND_UP)+" [ log("
+                +Decimal(relativeSharesPerUser[user]).toFixed(6, Decimal.ROUND_UP) +" + 1) * log("
+                +Decimal(consumeVolumeOcean).toFixed(6, Decimal.ROUND_UP) +" + 2) ]"
+                +" -> totalRewards: "+totalRewards.toFixed(6, Decimal.ROUND_UP))
         }
         //move to next pool
     }
@@ -102,7 +115,7 @@ async function calculate() {
     writeStreamChain.write("Address,RewardPercentage,TotalReward\n")
     for (user in rewards) {
         const endReward = new Decimal(rewards[user]).mul(totalOceanReward).div(totalRewards)
-        const rewardPercentage = new Decimal(rewards[user]).mul(100).div(totalOceanReward)
+        const rewardPercentage = new Decimal(rewards[user]).mul(100).div(totalRewards)
         if (endReward.gte(decMinReward)) {
             // add the reward to output, since it's above the threshold
             writeStreamChain.write(user + "," + rewardPercentage.toFixed(6, Decimal.ROUND_UP) + "," + endReward.toFixed(6, Decimal.ROUND_UP) + "\n")

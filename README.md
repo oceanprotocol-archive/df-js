@@ -33,4 +33,11 @@ Rewards are written to a file:
  - rewards_chainId_startBlock_endBlock_chunkSize_totalOceanReward.csv  (Address , Reward)
 
 
+# Example:
+
+To compute DF farming rewards on rinkeby, from block 10182337 to block 10268436 while taking a snapshot every 10000 and having a total OCEAN reward of 25000, run the following:
+
+```bash
+node ./script/index.js 4 10182337 10268436 10000 25000
+```
 
