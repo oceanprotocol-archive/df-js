@@ -105,7 +105,7 @@ async function calculate() {
         const rewardPercentage = new Decimal(rewards[user]).mul(100).div(totalOceanReward)
         if (endReward.gte(decMinReward)) {
             // add the reward to output, since it's above the threshold
-            writeStream.write(user + "," + rewardPercentage.toFixed(6, Decimal.ROUND_UP) + "," + endReward.toFixed(6, Decimal.ROUND_UP) + "\n")
+            writeStreamChain.write(user + "," + rewardPercentage.toFixed(6, Decimal.ROUND_UP) + "," + endReward.toFixed(6, Decimal.ROUND_UP) + "\n")
         }
     }
     //end of script
