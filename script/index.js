@@ -9,7 +9,7 @@ const crypto = require('crypto-js');
 //settings
 const decMinReward = new Decimal(10)    /// if end reward is lower than 10, ignore it
 const verboseDebug = true  // set it to false to disable verbose output
-
+const extraVerboseDebug = true // this will show list of shares per user per block.  Adds thousands of debug lines
 
 
 //script begins
@@ -316,6 +316,16 @@ async function getPoolSharesatBlock(poolId, block) {
         }
         skip = skip + 1000
     } while (true)
+    if(extraVerboseDebug){
+            if(Object.keys(shares).length>0){
+                console.log("\t\t\t\t\t At block "+block+" for pool "+poolId+" we have the following ratio of lp shares:")
+                for(user in shares)
+                    console.log("\t\t\t\t\t\t "+user+":  "+shares[user])
+            }
+            else{
+                console.log("\t\t\t\t\t At block "+block+" for pool "+poolId+" there are no shares")
+            }
+    }
     return (shares)
 
 }
@@ -354,11 +364,15 @@ async function getAvgSharesPerUser(poolId, startBlock, endBlock, chunkSize) {
             avgSharesPerUser[user] = avgSharesPerUser[user].plus(relativeUserShares[user])
         }
     }
-
+    if(extraVerboseDebug && Object.keys(avgSharesPerUser).length>0){
+        console.log("\t\t\t\tFor pool "+poolId+" we have the following final shares ratio:")
+    }
     for (user in avgSharesPerUser) {
         //just do a simple average over blocks
+        if(extraVerboseDebug){
+            console.log("\t\t\t\t\t "+user+" : Total of "+avgSharesPerUser[user].toString()+" shares over "+count+" snapshots -> avg: " + Decimal(avgSharesPerUser[user]).div(count).toString())
+        }
         avgSharesPerUser[user] = new Decimal(avgSharesPerUser[user]).div(count)
-
     }
     return (avgSharesPerUser)
 }
