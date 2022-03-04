@@ -17,7 +17,7 @@ const startBlock = process.argv[3]
 const endBlock = process.argv[4]
 const chunkSize = process.argv[5]
 const totalOceanReward = process.argv[6]
-ocean.LoggerInstance.setLevel(-1)
+ocean.LoggerInstance.setLevel(-1)  // otherwise aquarius will pollute the script output
 const configHelper = new ocean.ConfigHelper()
 const config = configHelper.getConfig(parseInt(chainId))
 if (!config) process.exit(1)
@@ -36,21 +36,22 @@ calculate()
 
 
 
-
+/**
+   * Main function of the script
+   */
 async function calculate() {
     /* 
     Get list of approved tokens
     For each pool that has baseToken in approved tokens list:
-        get did  (fetch nft, compose did)
-        make sure it's not in purgatory
-        get snapshots of shares from startBlock to endBlock, in chunks
-        compute average share  (sum all shares from step above and divide them by nr of chunks)
-        get consume count
-        compute reward
-        add reward for did to global rewards
+        - get did  (fetch nft, compose did)
+        - make sure it's not in purgatory
+        - get consume count (in Ocean + USDT) for that asset in interval startBlock -> endBlock
+        - fetch relative shares in the pool for each user by taking snapshots every chunkSize from startBlock to endBlock
+        - compute reward according to formula (this is per pool per user)
+        - add rewards to global rewards object
+    Normalize rewards (ie: add rewards from multiple pools for the same user)
     Write rewards to csv
     */
-
     let rewards = []
     let totalRewards = new Decimal(0)
     console.log("Start to get rewards for chain: " + chainId + ", StartBlock: " + startBlock + ", EndBlock: " + endBlock + ", chunkSize:" + chunkSize)
@@ -84,14 +85,12 @@ async function calculate() {
         const { consumeVolumeUSDT, consumeVolumeOcean } = await getConsumeVolume(pool.datatoken.id, startBlock, endBlock)
         // fetch relative shares in the pool for each user by taking snapshots every chunkSize from startBlock to endBlock
         const relativeSharesPerUser = await getAvgSharesPerUser(pool.id, startBlock, endBlock, chunkSize)
-        console.log("For pool "+pool.id +" we have the following relatives:")
-        console.log(relativeSharesPerUser)
         for (user in relativeSharesPerUser) {
-            if(!rewards[user])
+            if (!rewards[user])
                 rewards[user] = new Decimal(0)
             // add reward based on the formula
-            const stakeIncentive=new Decimal(relativeSharesPerUser[user]).plus(1)
-            const consumeIncentive=new Decimal(consumeVolumeOcean).plus(2)
+            const stakeIncentive = new Decimal(relativeSharesPerUser[user]).plus(1)
+            const consumeIncentive = new Decimal(consumeVolumeOcean).plus(2)
             const reward = Decimal.log(stakeIncentive).mul(Decimal.log(consumeIncentive))
             rewards[user] = rewards[user].plus(reward)
             totalRewards = totalRewards.plus(reward)
@@ -99,19 +98,27 @@ async function calculate() {
         //move to next pool
     }
     //we have all rewards, we just need to wrap up the final array
-    const writeStreamChain = fs.createWriteStream('rewards_'+chainId+"_"+startBlock+"_"+endBlock+"_"+chunkSize+"_"+totalOceanReward+".csv")
+    const writeStreamChain = fs.createWriteStream('rewards_' + chainId + "_" + startBlock + "_" + endBlock + "_" + chunkSize + "_" + totalOceanReward + ".csv")
     writeStreamChain.write("Address,RewardPercentage,TotalReward\n")
     for (user in rewards) {
-        const endReward =  new Decimal(rewards[user]).mul(totalOceanReward).div(totalRewards)
+        const endReward = new Decimal(rewards[user]).mul(totalOceanReward).div(totalRewards)
         const rewardPercentage = new Decimal(rewards[user]).mul(100).div(totalOceanReward)
-        if(endReward.gte(decMinReward)){
-            // do not add the reward to output, since it's below the threshold
-            writeStream.write(user + "," + rewardPercentage.toFixed(6,Decimal.ROUND_UP) + ","+ endReward.toFixed(6,Decimal.ROUND_UP) + "\n")
+        if (endReward.gte(decMinReward)) {
+            // add the reward to output, since it's above the threshold
+            writeStream.write(user + "," + rewardPercentage.toFixed(6, Decimal.ROUND_UP) + "," + endReward.toFixed(6, Decimal.ROUND_UP) + "\n")
         }
     }
     //end of script
 }
 
+
+// helper functions below
+
+
+/**
+   * Returns an array with approved Tokens (ie: Ocean, H2O, etc)
+   * List of approved tokens is network dependant
+*/
 async function getApprovedTokens() {
     const poolQuery = { query: `query {opcs{approvedTokens} }` }
     let tokens = []
@@ -134,6 +141,10 @@ async function getApprovedTokens() {
     return tokens
 }
 
+/**
+   * Returns an array of pool objects which have basetoken in approvedTokens
+   * @param approvedTokens   array of approvedTokens
+*/
 async function getAllPools(approvedTokens) {
     let tokenList = ""
     for (token of approvedTokens)
@@ -188,7 +199,12 @@ async function getAllPools(approvedTokens) {
     return pools
 }
 
-
+/**
+   * Returns total consumeVolume (in OCEAN and USDT(not implemented in subgraph yet), starting from startBlock to endBlock
+   * @param datatoken   datatoken address
+   * @param startBlock   startBlock
+   * @param endBlock   endBlock
+*/
 async function getConsumeVolume(datatoken, startBlock, endBlock) {
     let consumeVolumeUSDT = 0
     let consumeVolumeOcean = 0
@@ -240,6 +256,12 @@ async function getConsumeVolume(datatoken, startBlock, endBlock) {
 }
 
 
+/**
+   * Returns an array that contains number of pool shares for each user at a specific block
+   * ssContract is excluded from the list
+   * @param poolId   pool address
+   * @param block   block
+*/
 async function getPoolSharesatBlock(poolId, block) {
     let totalPoolShares = 0
     let shares = []
@@ -261,31 +283,38 @@ async function getPoolSharesatBlock(poolId, block) {
                         }
                     }`
         }
-        
+
         const response = await fetch(subgraphURL, {
             method: 'POST',
             body: JSON.stringify(query)
         })
         const result = await response.json()
-        
+
         if (result.data && result.data.poolShares) {
             if (result.data.poolShares.length < 1) break
-            
+
             for (const poolShare of result.data.poolShares) {
                 totalPoolShares = poolShare.pool.totalShares
                 // exclude ss bot
-                // if (poolShare.user.id == config.sideStakingAddress.toLowerCase()) continue
+                if (poolShare.user.id == config.sideStakingAddress.toLowerCase()) continue
                 if (poolShare.shares)
                     shares[poolShare.user.id] = new Decimal(poolShare.shares).div(totalPoolShares)
             }
         }
-        skip=skip+1000
-    }while(true)
-    return(shares)
-        
+        skip = skip + 1000
+    } while (true)
+    return (shares)
+
 }
 
-
+/**
+   * Returns an array that contains avrage no of pool shares for each user between startBlock and endBlock
+   * by having snapshots every chunkSize
+   * @param poolId  pool address
+   * @param startBlock   startBlock
+   * @param endBlock   endBlock
+   * @param chunkSize   chunkSize
+*/
 async function getAvgSharesPerUser(poolId, startBlock, endBlock, chunkSize) {
     let avgSharesPerUser = []
     let count = 0
@@ -293,9 +322,9 @@ async function getAvgSharesPerUser(poolId, startBlock, endBlock, chunkSize) {
     for (i = parseInt(startBlock); i <= parseInt(endBlock); i = i + parseInt(chunkSize)) {
         count++
         // let's fetch relativeUserShare during interval EndBlock - StartBlock, from chunk to chunk
-        const relativeUserShares = await getPoolSharesatBlock(poolId,i)
+        const relativeUserShares = await getPoolSharesatBlock(poolId, i)
         for (user in relativeUserShares) {
-            if (!(user in avgSharesPerUser)){ 
+            if (!(user in avgSharesPerUser)) {
                 avgSharesPerUser[user] = new Decimal(0)
             }
             avgSharesPerUser[user] = avgSharesPerUser[user].plus(relativeUserShares[user])
@@ -304,15 +333,15 @@ async function getAvgSharesPerUser(poolId, startBlock, endBlock, chunkSize) {
     if (i < endBlock) {
         //do it for endBlock as well
         count++
-        const relativeUserShares = await getPoolSharesatBlock(poolId,i)
+        const relativeUserShares = await getPoolSharesatBlock(poolId, i)
         for (user in relativeUserShares) {
-            if (!(user in avgSharesPerUser)){ 
+            if (!(user in avgSharesPerUser)) {
                 avgSharesPerUser[user] = new Decimal(0)
             }
             avgSharesPerUser[user] = avgSharesPerUser[user].plus(relativeUserShares[user])
         }
     }
-    
+
     for (user in avgSharesPerUser) {
         //just do a simple average over blocks
         avgSharesPerUser[user] = new Decimal(avgSharesPerUser[user]).div(count)
