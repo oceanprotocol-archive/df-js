@@ -16,7 +16,8 @@ Related repos: [df-issues](https://github.com/oceanprotocol/df-issues), [df-py](
         - compute reward according to formula (this is per pool per user)
         - add rewards to global rewards object
     Normalize rewards (ie: add rewards from multiple pools for the same user)
-    Write rewards to csv```
+    Write rewards to csv
+```
 
 # Installation
 ```bash
