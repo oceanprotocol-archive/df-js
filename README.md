@@ -190,3 +190,8 @@ When a new set of smartcontracts is deployed, we need to bump ocean.js dep here 
 
 
 2. USDT Consume volume is not available in the subgraph now. But since all pools are OCEAN based, we are using OCEAN consume volume instead.
+
+3. ChunkSize.   Of course, it would be easy to fetch amount of pool shares every Sunday night, at midnight. But malicios actors will add liqudity Sunday and remove it Monday. And then add it again Sunday, thus having full reward.
+    In order to mitigate this, we need to average no of pool shares by having snapshots during the startBlock -> EndBlock interval.
+    Script supports granularity at level of 1 block, but this will take a lot of time. (milions of requests to our subgraph)
+    The challenge is to find the right balance (maybe every hour?). Please take into account that different network have different average time between blocks , so a chunkSize of 257 equals about one hour on mainnet, but on polygon is just 20 mins.
