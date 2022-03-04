@@ -52,7 +52,7 @@ async function calculate() {
         - get did  (fetch nft, compose did)
         - make sure it's not in purgatory
         - get consume count (in Ocean + USDT) for that asset in interval startBlock -> endBlock
-        - fetch relative shares in the pool for each user by taking snapshots every chunkSize from startBlock to endBlock
+        - fetch average shares in the pool during interval for each user by taking snapshots every chunkSize from startBlock to endBlock
         - compute reward according to formula (this is per pool per user)
         - add rewards to global rewards object
     Normalize rewards (ie: add rewards from multiple pools for the same user)
