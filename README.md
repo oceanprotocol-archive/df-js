@@ -185,5 +185,8 @@ Address,RewardPercentage,TotalReward
 
 # NOTES
 
-This script depends on ocean.js, which depends on ocean-contracts.
+1. This script depends on ocean.js, which depends on ocean-contracts.
 When a new set of smartcontracts is deployed, we need to bump ocean.js dep here as well
+
+
+2. USDT Consume volume is not available in the subgraph now. But since all pools are OCEAN based, we are using OCEAN consume volume instead.
