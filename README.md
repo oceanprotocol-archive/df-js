@@ -1,3 +1,5 @@
+Archived repository. The data farming work continues in the [df-py](https://github.com/oceanprotocol/df-py) repository.
+
 # DF Script (JS)
 
 Data Farming script in JS. Consider it the alpha.
